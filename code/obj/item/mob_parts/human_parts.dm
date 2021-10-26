@@ -1392,6 +1392,54 @@
 	partlistPart = "foot_right"
 	step_image_state = "footprintsR"
 
+//// PASM LIMBS ////
+////// PARENT //////
+/obj/item/parts/human_parts/arm/mutant/pasm
+	icon = 'icons/mob/pasm.dmi'
+	partIcon = 'icons/mob/pasm.dmi'
+	skintoned = 1
+
+/obj/item/parts/human_parts/leg/mutant/pasm
+	icon = 'icons/mob/pasm.dmi'
+	partIcon = 'icons/mob/pasm.dmi'
+	skintoned = 1
+
+////// ACTUAL WIGGLY PASM BITS //////
+
+/obj/item/parts/human_parts/arm/mutant/pasm/left
+	name = "left possum arm"
+	desc = "Aaaaa possum's left arm"
+	icon_state = "arm_left"
+	slot = "l_arm"
+	side = "left"
+	handlistPart = "hand_left"
+
+/obj/item/parts/human_parts/arm/mutant/pasm/right
+	name = "right possum arm"
+	desc = "Aaaaa possum's right arm"
+	icon_state = "arm_right"
+	slot = "r_arm"
+	side = "right"
+	handlistPart = "hand_right"
+
+/obj/item/parts/human_parts/leg/mutant/pasm/left
+	name = "left possum leg"
+	desc = "Aaaaa possum's left leg"
+	icon_state = "leg_left"
+	slot = "l_leg"
+	side = "left"
+	partlistPart = "foot_left"
+	step_image_state = "footprintsL"
+
+/obj/item/parts/human_parts/leg/mutant/pasm/right
+	name = "right possum leg"
+	desc = "Aaaaa possum's right leg"
+	icon_state = "leg_right"
+	slot = "r_leg"
+	side = "right"
+	partlistPart = "foot_right"
+	step_image_state = "footprintsR"
+
 //// AMPHIBIAN LIMBS ////
 //////  PARENT  //////
 

@@ -858,6 +858,59 @@
 	say_verb()
 		return "hisses"
 
+/datum/mutantrace/pasm
+	name = "possum"
+	icon = 'icons/mob/pasm.dmi'
+	icon_state = "body_m"
+	override_attack = 0
+	mutant_appearance_flags = (NOT_DIMORPHIC | HAS_HUMAN_EYES | BUILT_FROM_PIECES | HAS_EXTRA_DETAILS | FIX_COLORS | SKINTONE_USES_PREF_COLOR_1 | HAS_SPECIAL_HAIR | WEARS_UNDERPANTS)
+	voice_override = "pasm"
+	special_head = HEAD_PASM
+	special_head_state = "head"
+	eye_state = "eyes_pasm"
+	mutant_organs = list("tail" = /obj/item/organ/tail/pasm,
+	"left_eye" = /obj/item/organ/eye/pasm,
+	"right_eye" = /obj/item/organ/eye/pasm)
+	mutant_folder = 'icons/mob/pasm.dmi'
+	r_limb_arm_type_mutantrace = /obj/item/parts/human_parts/arm/mutant/pasm/right
+	l_limb_arm_type_mutantrace = /obj/item/parts/human_parts/arm/mutant/pasm/left
+	r_limb_leg_type_mutantrace = /obj/item/parts/human_parts/leg/mutant/pasm/right
+	l_limb_leg_type_mutantrace = /obj/item/parts/human_parts/leg/mutant/pasm/left
+	race_mutation = /datum/bioEffect/mutantrace
+	clothing_icon_override = 'icons/mob/lizard_clothes.dmi'
+	dna_mutagen_banned = FALSE
+
+	New(var/mob/living/carbon/human/H)
+		..()
+		if(ishuman(H))
+			// H.give_pasm_powers() /* Play-dead, etc. */
+			H.AddComponent(/datum/component/consume/can_eat_inedible_organs)
+			H.mob_flags |= SHOULD_HAVE_A_TAIL
+
+			H.update_face()
+			H.update_body()
+			H.update_clothing()
+	sight_modifier()
+		mob.see_in_dark = SEE_DARK_HUMAN + 1
+		mob.see_invisible = 1
+
+	say_filter(var/message)
+		return replacetext(message, "a", stutter("aaa"))
+
+	disposing()
+		if(ishuman(mob))
+			var/mob/living/carbon/human/L = mob
+			var/datum/component/C = L.GetComponent(/datum/component/consume/can_eat_inedible_organs)
+			C?.RemoveComponent(/datum/component/consume/can_eat_inedible_organs)
+		//	L.remove_pasm_powers()
+			mob.mob_flags &= ~SHOULD_HAVE_A_TAIL
+		. = ..()
+
+	say_verb()
+		return "screms"
+
+	// Should probably have a possum-hiss scream emote, at some point.
+
 /datum/mutantrace/zombie
 	name = "zombie"
 	icon_state = "zombie"

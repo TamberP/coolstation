@@ -413,6 +413,11 @@
 	desc = "I guess its owner is just a lzard now. Ugh that pun was terrible. Not worth losing an eye over."
 	icon_state = "eye-lizard"
 
+/obj/item/organ/eye/pasm
+	name = "possum eye"
+	desc = "Scream-o-vision in two easy steps..."
+	icon_state = "eye-pasm"
+
 obj/item/organ/eye/skeleton
 	name = "boney eye"
 	desc = "Yes it also has eye sockets. How this works is unknown."

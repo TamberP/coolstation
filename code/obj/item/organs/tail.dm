@@ -202,6 +202,20 @@
 	colorful = 1
 	multipart_icon = 1
 
+/obj/item/organ/tail/pasm
+	name = "possum tail"
+	desc = "a long, fleshy tail"
+	icon_state = "tail-pasm"
+	icon_piece_1 = "tail-pasm-detail-1"
+	icon_piece_2 = "tail-pasm-detail-2"
+	organ_image_icon = 'icons/mob/pasm.dmi'
+	organ_image_under_suit_1 = "pasm_under_suit_1"
+	organ_image_under_suit_2 = "pasm_under_suit_2"
+	organ_image_over_suit = "pasm_over_suit"
+	tail_num = TAIL_PASM
+	colorful = 1
+	multipart_icon = 1
+
 /obj/item/organ/tail/cow
 	name = "cow tail"
 	desc = "A short, brush-like tail."
