@@ -465,7 +465,7 @@
 		if(src.client && src.client.preferences)
 			sec_note = src.client.preferences.security_note
 			med_note = src.client.preferences.medical_note
-		data_core.addManifest(src, sec_note, med_note)
+		data_core.addManifest(src, sec_note, med_note, 0 /* previous debt */)
 
 	SPAWN_DBG(0)
 		if (ishuman(src))

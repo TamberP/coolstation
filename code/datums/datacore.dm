@@ -8,7 +8,8 @@
 	var/list/datum/ticket/tickets = list (  )
 	var/obj/machinery/networked/mainframe/mainframe = null
 
-/datum/datacore/proc/addManifest(var/mob/living/carbon/human/H as mob, var/sec_note = "", var/med_note = "")
+/datum/datacore/proc/addManifest(var/mob/living/carbon/human/H as mob, var/sec_note = "", var/med_note = "",\
+				var/previous_debt = 0)
 	if (!H || !H.mind)
 		return
 
@@ -167,6 +168,7 @@
 	B.fields["job"] = H.job
 	B.fields["current_money"] = 100.0
 	B.fields["notes"] = "No notes."
+	B.fields["debthoal"] = previous_debt
 
 	// If it exists for a job give them the correct wage
 	var/wageMult = 1
