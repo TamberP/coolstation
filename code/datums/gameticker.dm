@@ -674,12 +674,41 @@ var/global/current_state = GAME_STATE_WORLD_INIT
 			boutput(world, "Objective: [O.explanation_text] <B>Maybe</B>")
 #endif
 
+	// Persistent bank stuff - Now known as the Debt Hoal
+	logTheThing("debug", null, null, "Digging the debt hoal deeper")
+	for(var/mob/player in mobs)
+		if(player?.client && player.mind && !player.mind.joined_observer && !istype(player, /mob/new_player))
+			// Skip: Nukeops, Blobs, Wizards, Wraiths, etc.
+			// Basically, if yer not a NanoTrasen employee, and thus not on payroll...
+			if(!isvirtual(player) && (isnukeop(player) || (isblob(player) && (player.mind?.special_role == ROLE_BLOB)) || iswraith(player) || (iswizard(player) && (player.mind?.special_role == ROLE_WIZARD)) ))
+				logTheThing("debug", null, null, "Debt hoal calcs on [player.client]")
+				var/increase_the_decrease = 100 * 5 // tmp. Make this use wage mult
+
+				// Did they died?
+				if(isdead(player) || isVRghost(player) || isghostcritter(player) || istype(player, /mob/dead/target_observer))
+					// Are they an AI?
+					if(isAI(player) || isshell(player))
+						increase_the_decrease += 1500	// That equipment's expensive, Buddy!
+					else
+						var/mob/dead/observer/O = player
+						if(O.corpse && in_centcom(O.corpse))
+							increase_the_decrease += 1000	// Vat fee for cloning
+						else
+							increase_the_decrease += 2000	// Vat fee plus biomass fee
+				else
+					if(!in_centcom(player))
+						increase_the_decrease += 1500	// Retrieval fee. Because fuck you
+										// You should have been on the shuttle
+
+				var/interest = increase_the_decrease * (rand(20,75)/100) // 2.0 to 7.5%
+				increase_the_decrease += interest
+				logTheThing("debug", null, null, "[player.client] is [increase_the_decrease] deeper in the hoal")
+
+
 	for_by_tcl(P, /obj/bookshelf/persistent) //make the bookshelf save its contents
 		P.build_curr_contents()
 
 	global.save_noticeboards()
-
-
 
 	logTheThing("debug", null, null, "Done with books")
 
