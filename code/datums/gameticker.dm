@@ -680,9 +680,12 @@ var/global/current_state = GAME_STATE_WORLD_INIT
 		if(player?.client && player.mind && !player.mind.joined_observer && !istype(player, /mob/new_player))
 			// Skip: Nukeops, Blobs, Wizards, Wraiths, etc.
 			// Basically, if yer not a NanoTrasen employee, and thus not on payroll...
-			if(!isvirtual(player) && (isnukeop(player) || (isblob(player) && (player.mind?.special_role == ROLE_BLOB)) || iswraith(player) || (iswizard(player) && (player.mind?.special_role == ROLE_WIZARD)) ))
+			if(isvirtual(player) && (isnukeop(player) || (isblob(player) && (player.mind?.special_role == ROLE_BLOB)) || iswraith(player) || (iswizard(player) && (player.mind?.special_role == ROLE_WIZARD)) ))
+				continue
+			else
 				logTheThing("debug", null, null, "Debt hoal calcs on [player.client]")
-				var/increase_the_decrease = 100 * 5 // tmp. Make this use wage mult
+				var/increase_the_decrease = 500 // tmp. Make this use job wage Currently just 5x starting pay
+				increase_the_decrease *= (rand(20,75)/100) // interest of 2.0 to 7.5%
 
 				// Did they died?
 				if(isdead(player) || isVRghost(player) || isghostcritter(player) || istype(player, /mob/dead/target_observer))
@@ -700,8 +703,7 @@ var/global/current_state = GAME_STATE_WORLD_INIT
 						increase_the_decrease += 1500	// Retrieval fee. Because fuck you
 										// You should have been on the shuttle
 
-				var/interest = increase_the_decrease * (rand(20,75)/100) // 2.0 to 7.5%
-				increase_the_decrease += interest
+				// - Next step, add this to their current character slot's debt hole
 				logTheThing("debug", null, null, "[player.client] is [increase_the_decrease] deeper in the hoal")
 
 
