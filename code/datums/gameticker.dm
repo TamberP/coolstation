@@ -703,7 +703,7 @@ var/global/current_state = GAME_STATE_WORLD_INIT
 						increase_the_decrease += 1500	// Retrieval fee. Because fuck you
 										// You should have been on the shuttle
 
-				// - Next step, add this to their current character slot's debt hole
+				player.client.debthole_add(0-increase_the_decrease)
 				logTheThing("debug", null, null, "[player.client] is [increase_the_decrease] deeper in the hoal")
 
 

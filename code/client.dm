@@ -70,6 +70,9 @@ var/global/list/vpn_ip_checks = list() //assoc list of ip = true or ip = false. 
 	var/persistent_bank = 0 //cross-round persistent cash value (is increased as a function of job paycheck + station score)
 	var/persistent_bank_item = 0 //Name of a bank item that may have persisted from a previous round. (Using name because I'm assuming saving a string is better than saving a whole datum)
 
+	var/debt_hole = 0
+	var/debt_hole_valid = FALSE
+
 	//var/obj/item/gun/modular/persistent_gun = null // :3
 
 	var/datum/reputations/reputations = null
@@ -841,6 +844,32 @@ var/global/list/vpn_ip_checks = list() //assoc list of ip = true or ip = false. 
 		return 1
 	else
 		return 0
+
+// Welcome to the debt hoal. The line only goes down from here.
+// (This is basically the persistent bank stuff but Different(TM))
+/client/proc/debthole_add(amt as num)
+	if(!debt_hole_valid)
+		src.debt_hole = rand(-1800, -600)
+	set_debthole(src.debt_hole + amt)
+
+/client/proc/set_debthole(amt as num)
+	src.debt_hole_valid = TRUE
+	src.debt_hole = amt
+
+/client/proc/save_debthole()
+	if(debt_hole_valid && cloud_available())
+		var/profile_num = src.preferences.profile_number
+		cloud_put("debthole_[profile_num]", src.debt_hole)
+
+/client/proc/load_debthole()
+	if(cloud_available())
+		var/profile_num = src.preferences.profile_number
+		var/cloud_hoal = cloud_get("debthole_[profile_num]")
+		if(cloud_hoal)
+			src.debt_hole = cloud_hoal
+			src.debt_hole_valid = TRUE
+
+// ## end of debthoal stuff ##
 
 /client/proc/is_mentor()
 	return player.mentor
