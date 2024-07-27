@@ -684,28 +684,47 @@ var/global/current_state = GAME_STATE_WORLD_INIT
 				continue
 			else
 				logTheThing("debug", null, null, "Debt hoal calcs on [player.client]")
-				var/increase_the_decrease = 500 // tmp. Make this use job wage Currently just 5x starting pay
-				increase_the_decrease *= (rand(20,75)/100) // interest of 2.0 to 7.5%
+				var/chui/window/roundend_debthoal/bonking = new
+
+				var/increase_the_decrease = 500
+				if(player.mind.assigned_role in wagesystem.jobs)
+					increase_the_decrease = (wagesystem.jobs[player.mind.assigned_role]) * 5
+
+				bonking.wage_base = round(increase_the_decrease)
+				bonking.interest = increase_the_decrease * (rand(20,75)/100) // interest of 2.0 to 7.5%
+				increase_the_decrease += bonking.interest
 
 				// Did they died?
 				if(isdead(player) || isVRghost(player) || isghostcritter(player) || istype(player, /mob/dead/target_observer))
 					// Are they an AI?
 					if(isAI(player) || isshell(player))
-						increase_the_decrease += 1500	// That equipment's expensive, Buddy!
+						increase_the_decrease += bonking.equipment_fee = 1800	// That equipment's expensive, Buddy!
 					else
 						var/mob/dead/observer/O = player
 						if(O.corpse && in_centcom(O.corpse))
-							increase_the_decrease += 1000	// Vat fee for cloning
+							increase_the_decrease += bonking.cloaning_fee = 1200	// Vat fee for cloning
 						else
-							increase_the_decrease += 2000	// Vat fee plus biomass fee
+							increase_the_decrease += bonking.cloaning_fee = 2000	// Vat fee plus biomass fee
+							bonking.biomass_surcharge = TRUE
 				else
 					if(!in_centcom(player))
-						increase_the_decrease += 1500	// Retrieval fee. Because fuck you
-										// You should have been on the shuttle
+						// Retrieval fee. Because fuck you
+						// You should have been on the shuttle
+						increase_the_decrease += bonking.retrieval_fee = 1500
 
-				player.client.debthole_add(0-increase_the_decrease)
 				logTheThing("debug", null, null, "[player.client] is [increase_the_decrease] deeper in the hoal")
+				// Make it feel like you can climb out of the hoal?
+				// increase_the_decrease - (current round bank balance)?
+				SPAWN_DBG(0)
+					if(player.client)
+						player.client.debthole_add(0-increase_the_decrease)
+						if(player.client.persistent_bank != player.client.persistent_bank)
+							player.client.set_debthole(-2500)
 
+						bonking.current_balance = player.client.persistent_bank
+						bonking.Subscribe(player.client) // Nice pop-up window
+
+	logTheThing("debug", null, null, "Done with persistent bank stuff")
 
 	for_by_tcl(P, /obj/bookshelf/persistent) //make the bookshelf save its contents
 		P.build_curr_contents()

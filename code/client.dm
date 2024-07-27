@@ -67,11 +67,7 @@ var/global/list/vpn_ip_checks = list() //assoc list of ip = true or ip = false. 
 	var/using_antag_token = 0 //Set when the player readies up at round start, and opts to redeem a token.
 
 	var/persistent_bank_valid = FALSE
-	var/persistent_bank = 0 //cross-round persistent cash value (is increased as a function of job paycheck + station score)
-	var/persistent_bank_item = 0 //Name of a bank item that may have persisted from a previous round. (Using name because I'm assuming saving a string is better than saving a whole datum)
-
-	var/debt_hole = 0
-	var/debt_hole_valid = FALSE
+	var/persistent_bank = 0 // Used to be spacebux stuff. Now is the debt hoal.
 
 	//var/obj/item/gun/modular/persistent_gun = null // :3
 
@@ -806,37 +802,18 @@ var/global/list/vpn_ip_checks = list() //assoc list of ip = true or ip = false. 
 // defines are already set, just do the checks here ok
 // ok in retrospect i don't think we need this so I'm not doing it. leaving this comment here though! for fun! (in case SOMEONE changes their mind)
 
+
 /client/proc/set_last_purchase(datum/bank_purchaseable/purchase)
-	if (!purchase || purchase == 0 || !purchase.carries_over)
-		persistent_bank_item = "none"
-		if( cloud_available() )
-			cloud_put( "persistent_bank_item", "none" )
-	else
-		persistent_bank_item = purchase.name
-		if( cloud_available() )
-			cloud_put( "persistent_bank_item", persistent_bank_item )
+	return // Not used any more
 
 /client/proc/set_persistent_bank(amt as num)
-	persistent_bank = amt
-	if( cloud_available() )
-		cloud_put( "persistent_bank", amt )
-	/*
-	var/savefile/PB = LoadSavefile("data/PersistentBank.sav")
-	if (!PB) return
-	PB[ckey] << amt
-	*/
+	return // Not used any more
 
-//MBC TODO : DO SOME LOGGING ON ADD_TO_BANK() AND TRY_BANK_PURCHASE()
 /client/proc/add_to_bank(amt as num)
-	if(!persistent_bank_valid)
-		load_persistent_bank()
-		if(!persistent_bank_valid)
-			return
-	var/new_bank_value = persistent_bank + amt
-	src.set_persistent_bank(new_bank_value)
+	debthole_add(0-amt)
 
 /client/proc/sub_from_bank(datum/bank_purchaseable/purchase)
-	add_to_bank(-purchase.cost)
+	debthole_add(-purchase.cost)
 
 /client/proc/bank_can_afford(amt as num)
 	var/new_bank_value = persistent_bank - amt
@@ -848,26 +825,26 @@ var/global/list/vpn_ip_checks = list() //assoc list of ip = true or ip = false. 
 // Welcome to the debt hoal. The line only goes down from here.
 // (This is basically the persistent bank stuff but Different(TM))
 /client/proc/debthole_add(amt as num)
-	if(!debt_hole_valid)
-		src.debt_hole = rand(-1800, -600)
-	set_debthole(src.debt_hole + amt)
+	if(!persistent_bank_valid)
+		src.persistent_bank = rand(-1800, -600)
+	set_debthole(src.persistent_bank + amt)
 
 /client/proc/set_debthole(amt as num)
-	src.debt_hole_valid = TRUE
-	src.debt_hole = amt
+	src.persistent_bank_valid = TRUE
+	src.persistent_bank = amt
 
 /client/proc/save_debthole()
-	if(debt_hole_valid && cloud_available())
+	if(persistent_bank_valid && cloud_available())
 		var/profile_num = src.preferences.profile_number
-		cloud_put("debthole_[profile_num]", src.debt_hole)
+		cloud_put("debthole_[profile_num]", src.persistent_bank)
 
 /client/proc/load_debthole()
 	if(cloud_available())
 		var/profile_num = src.preferences.profile_number
 		var/cloud_hoal = cloud_get("debthole_[profile_num]")
 		if(cloud_hoal)
-			src.debt_hole = cloud_hoal
-			src.debt_hole_valid = TRUE
+			src.persistent_bank = cloud_hoal
+			src.persistent_bank_valid = TRUE
 
 // ## end of debthoal stuff ##
 
