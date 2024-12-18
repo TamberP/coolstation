@@ -712,9 +712,12 @@ var/global/current_state = GAME_STATE_WORLD_INIT
 						// You should have been on the shuttle
 						increase_the_decrease += bonking.retrieval_fee = 1500
 
+				if(player?.mind?.current)
+					var/datum/data/record/B = FindBankAccountByName(player.mind.current?.real_name)
+					increase_the_decrease =- B.fields["current_money"]
+
 				logTheThing("debug", null, null, "[player.client] is [increase_the_decrease] deeper in the hoal")
-				// Make it feel like you can climb out of the hoal?
-				// increase_the_decrease - (current round bank balance)?
+
 				SPAWN_DBG(0)
 					if(player.client)
 						player.client.debthole_add(0-increase_the_decrease)
@@ -723,6 +726,8 @@ var/global/current_state = GAME_STATE_WORLD_INIT
 
 						bonking.current_balance = player.client.persistent_bank
 						bonking.Subscribe(player.client) // Nice pop-up window
+					// Ideally, the debt-hole stuff would be per-character slot, but I can't
+					// think of a way to do that right now
 
 	logTheThing("debug", null, null, "Done with persistent bank stuff")
 

@@ -35,7 +35,8 @@
 		var/total = wage_base + interest + equipment_fee + cloaning_fee + retrieval_fee
 		ret += "<p style=\"text-align:left;\"><b>Total</b> .... <span style=\"float:right;\"><b>[total]</b></span></p><br>"
 		ret += "<p style=\"text-align:center;\">This will be deducted from your account automatically.</p><br><br>"
-		ret += "<p style=\"text-align:left;\">Your current account balance is: <span style\"float:right;\"><b>[current_balance]</b></span></p><br>"
+		ret += "<p style=\"text-align:left;\">Your current account balance is: <span style=\"float:right;\"><b>[current_balance]</b></span></p><br>"
+		ret += "<p style=\"text-align:left;\">Account balance after deductions: <span style=\"float:right;\"><b>[current_balance - total]</b></span></p><br>"
 
 		return ret
 
